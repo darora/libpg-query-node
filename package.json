@@ -43,7 +43,7 @@
   "binary": {
     "module_name": "queryparser",
     "module_path": "./build/Release/",
-    "host": "https://supabase-public-artifacts-bucket.s3-us-east-1.amazonaws.com",
+    "host": "https://supabase-public-artifacts-bucket.s3.amazonaws.com",
     "remote_path": "./libpg-query-node/"
   }
 }
