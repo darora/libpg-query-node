@@ -9,12 +9,10 @@
     "access": "public"
   },
   "scripts": {
-    "configure": "node-gyp configure",
-    "build": "node-gyp configure build",
-    "rebuild": "node-gyp configure rebuild",
-    "test": "mocha --timeout 5000",
-    "preinstall": "script/buildAddon.sh",
-    "postinstall": "node-gyp rebuild"
+    "configure": "node-pre-gyp configure",
+    "install": "node-pre-gyp install --fallback-to-build",
+    "rebuild": "node-pre-gyp configure rebuild",
+    "test": "mocha --timeout 5000"
   },
   "author": "Dan Lynch <pyramation@gmail.com> (http://github.com/pyramation)",
   "license": "LICENSE IN LICENSE",
