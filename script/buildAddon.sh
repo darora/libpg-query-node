@@ -1,34 +1,31 @@
 #!/usr/bin/env bash
 
-commit=55668e9003dfb148bc74b9c5d4a41facc5bad5c7
+commit=d1d0186b80c1fbf496265789af89da4e7ca890ab
 
 rDIR=$(pwd)
-rnd=$(LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 13 ; echo)
-tmpDir=/tmp/$rnd
+tmpDir=$(mktemp -d 2>/dev/null || mktemp -d -t 'tmpdir')
 
-mkdir -p $tmpDir
-
-cd $tmpDir
+cd "$tmpDir"
 
 git clone -b 13-latest --single-branch https://github.com/pganalyze/libpg_query.git
 cd libpg_query
 
-# echo "git checkout to $commit"
 git checkout $commit
 
+# needed if being invoked from within gyp
+unset MAKEFLAGS
+unset MFLAGS
 
 if [ "$(uname)" == "Darwin" ]; then
-	make CFLAGS='-mmacosx-version-min=10.7' PG_CFLAGS='-mmacosx-version-min=10.7'
+	make CFLAGS='-mmacosx-version-min=10.7' PG_CFLAGS='-mmacosx-version-min=10.7' build
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
-	make CFLAGS='' PG_CFLAGS=''
+	make CFLAGS='' PG_CFLAGS='' build
 fi
 
 if [ $? -ne 0 ]; then
 	echo "ERROR: 'make' command failed";
 	exit 1;
 fi
-
-wDIR=$(pwd)
 
 file=$(ls | grep 'libpg_query.a')
 
@@ -56,4 +53,5 @@ fi
 
 cp $(pwd)/pg_query.h $rDIR/libpg_query/include/
 
-cd $rDIR && rm -rf $wDIR
+cd "$rDIR"
+rm -rf "$tmpDir"
